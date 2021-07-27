@@ -26,9 +26,10 @@ void print_array_stats(int operations, int length, char * type) {
 
 void array_traversal(int * arr, int length) {
   int operations = 0;
+  print_new_line();
   for (int i = 0; i < length; i++) {
     operations++;
-    printf("index %d has element: %d", i, arr[i]);
+    printf("%d  ", arr[i]);
     print_new_line();
   }
   print_array_stats(operations, length, "ARRAY TRAVERSAL");
@@ -355,6 +356,125 @@ void stacks() {
   }
 }
 
+void queue_traversal(int * queue, int length, int rear) {
+  print_new_line();
+
+  for (int i = 0; i < length; i++) {
+    if (rear == -1 && i == 0) {
+      printf("(F) (R)");
+    } else if (i == 0) {
+      printf("(F) %d ", queue[i]);
+    } else if (i < rear) {
+      printf(" %d ", queue[i]);
+    } else if (i == rear) {
+      printf(" %d (R)", queue[i]);
+    } else if (i > rear) {
+      printf(" __ ");
+    }
+  }
+  print_new_line();
+  print_new_line();
+}
+
+void queue_add(int * queue, int length, int * rear) {
+  if ( * rear == length - 1) {
+    print_new_line();
+    printf("Sorry queue is full");
+    print_new_line();
+    return;
+  }
+  int e;
+  print_new_line();
+  printf("Please enter the element you wish to add.");
+  print_new_line();
+
+  scanf("%d", & e);
+
+  * rear = * rear + 1;
+  queue[ * rear] = e;
+
+  print_new_line();
+  printf("%d added to queue", e);
+  print_new_line();
+
+  queue_traversal(queue, length, * rear);
+
+}
+
+void queue_remove(int * queue, int length, int * rear) {
+  if ( * rear == -1) {
+    print_new_line();
+    printf("Sorry queue is empty");
+    print_new_line();
+    return;
+  }
+
+  int e = queue[0];
+
+  for (int i = 0; i < * rear; i++) {
+    queue[i] = queue[i + 1];
+  }
+  * rear = * rear - 1;
+
+  print_new_line();
+  printf("Removed element is %d", e);
+  print_new_line();
+
+  queue_traversal(queue, length, * rear);
+
+}
+
+void queues() {
+  int * queue;
+  int length = 0, choice = 0, rear = -1;
+
+  print_new_line();
+  printf("Please enter maximum length of queue");
+  print_new_line();
+
+  scanf("%d", & length);
+  queue = (int * ) malloc(length * sizeof(int));
+
+  queues_start: print_new_line();
+  printf("Please enter choice:");
+
+  print_new_line();
+  printf("1. Add");
+
+  print_new_line();
+  printf("2. Remove");
+
+  print_new_line();
+  printf("1. Traversal");
+
+  print_new_line();
+  scanf("%d", & choice);
+
+  switch (choice) {
+  case 1:
+    queue_add(queue, length, & rear);
+    goto queues_start;
+    break;
+
+  case 2:
+    queue_remove(queue, length, & rear);
+    goto queues_start;
+    break;
+
+  case 3:
+    queue_traversal(queue, length, rear);
+    goto queues_start;
+    break;
+
+  default:
+    print_new_line();
+    printf("Please enter a valid choice");
+    goto queues_start;
+
+  }
+
+}
+
 int main() {
   start: int ds_choice = 0;
   print_new_line();
@@ -386,8 +506,9 @@ int main() {
     stacks();
     break;
 
-    // case 3: queues();
-    // break;
+  case 3:
+    queues();
+    break;
 
   default:
     print_new_line();
