@@ -59,25 +59,37 @@ void array_linear_search(int * arr, int length) {
   print_array_stats(operations, length, "ARRAY LINEAR SEARCH");
 }
 
-void array_b_search(int * arr, int length, int start, int end, int q) {
+void binarySearch(int arr[], int left_index, int right_index, int q) {
+  if (right_index >= left_index) {
+    int mid_index = left_index + (right_index - left_index) / 2;
 
-  int middle = (end - start) / 2, index = -1;
-
-  if (q == middle) {
-    index = length / 2;
-    print_new_line();
-    printf("---> Hey, I found %d at %d", q, index);
+    // If the element is present at the middle
+    // itself
+    if (arr[mid_index] == q)
+      print_new_line();
+    printf("---> Hey I found %d at index %d", q, mid_index);
     print_new_line();
     return;
-  } else if (q < middle) {
-    array_b_search(arr, length / 2, start, middle, q);
-  } else if (q > middle) {
-    array_b_search(arr, length / 2, middle, end, q);
+
+    // If element is smaller than mid, then
+    // it can only be present in left subarray
+    if (arr[mid_index] > q)
+      binarySearch(arr, left_index, mid_index - 1, q);
+    else
+      // Else the element can only be present
+      // in right subarray
+      binarySearch(arr, mid_index + 1, right_index, q);
+  } else {
+    print_new_line();
+    printf("---> Mmm mm, Sorry couldn't find %d in the array :(", q);
+    print_new_line();
   }
 
+  // We reach here when element is not
+  // present in array
 }
 
-void array_binary_search(int * arr, int length, int start, int end) {
+void array_binary_search(int * arr, int length) {
   print_new_line();
   printf("The sorted array is:");
   print_new_line();
@@ -85,34 +97,49 @@ void array_binary_search(int * arr, int length, int start, int end) {
 
   printf("Which element do you want to search?");
   print_new_line();
-  
+
   int q = 0;
 
   scanf("%d", & q);
   print_new_line();
 
-  array_b_search(arr, length, start, end, q);
+  binarySearch(arr, 0, length - 1, q);
 }
 
 void array_selection_sort(int * arr, int length) {
-  if (length == 1) {
-    print_new_line();
-    printf("Array sorted via selection sort");
-    print_new_line();
-    print_new_line();
-    return;
-  }
-  int j, smallest_index = 0;
-  for (j = 1; j < length; j++) {
-    if (arr[j] < arr[smallest_index]) {
-      smallest_index = j;
+  int operations = 0;
+  for (int i = 0; i < length - 1; i++) {
+    operations++;
+    int smallest_index = i;;
+    for (int j = i + 1; j < length; j++) {
+      operations++;
+      if (arr[j] < arr[smallest_index]) {
+        smallest_index = j;
+      }
+    }
+    if (smallest_index != i) {
+      int temp = arr[i];
+      arr[i] = arr[smallest_index];
+      arr[smallest_index] = temp;
     }
   }
-  int temp = arr[0];
-  arr[0] = arr[smallest_index];
-  arr[smallest_index] = temp;
+  print_new_line();
+  printf("Array sorted via selection sort");
+  print_new_line();
+  print_new_line();
+  print_array_stats(operations, length, "ARRAY SELECTION SORT");
 
-  array_selection_sort(arr + sizeof(int), length - 1);
+}
+
+bool is_array_sorted_ascending(int * arr, int length) {
+  bool sorted = true;
+  for (int i = 1; i < length; i++) {
+    if (arr[i - 1] > arr[i]) {
+      sorted = false;
+      break;
+    }
+  }
+  return sorted;
 }
 
 void arrays() {
@@ -182,8 +209,15 @@ void arrays() {
     break;
 
   case 3:
-    array_selection_sort(arr, length);
-    array_binary_search(arr, length, arr[0], arr[length - 1]);
+    if (!is_array_sorted_ascending(arr, length)) {
+      printf("---> Array needs sorting");
+      print_new_line();
+      print_new_line();
+      array_selection_sort(arr, length);
+    }
+
+    array_binary_search(arr, length);
+    goto array_start;
     break;
 
     // case 4: array_selection_sort(arr, length);
@@ -208,6 +242,116 @@ void arrays() {
     print_new_line();
     printf("Please enter a valid choice");
     goto array_start;
+  }
+}
+
+void stack_traversal(int * stack, int length, int top) {
+  for (int i = length - 1; i >= 0; i--) {
+    if (i > top) {
+      printf("__");
+      print_new_line();
+    } else if (i == top || top == -1) {
+      printf("%d <--- TOP", stack[i]);
+      print_new_line();
+    } else {
+      printf("%d", stack[i]);
+      print_new_line();
+    }
+
+  }
+}
+
+void stack_push(int * stack, int length, int * top) {
+  if ( * top == length - 1) {
+    print_new_line();
+    printf("Sorry stack is full");
+    print_new_line();
+    return;
+  }
+  int e;
+  print_new_line();
+  printf("Please enter the element you wish to push");
+  print_new_line();
+
+  scanf("%d", & e);
+  print_new_line();
+
+  * top = * top + 1;
+  stack[ * top] = e;
+
+  print_new_line();
+  printf("---> Element pushed");
+  print_new_line();
+
+  stack_traversal(stack, length, * top);
+
+}
+
+void stack_pop(int * stack, int length, int * top) {
+  if ( * top == -1) {
+    print_new_line();
+    printf("Sorry stack is empty");
+    print_new_line();
+    return;
+  }
+  int e = stack[ * top];
+  * top = * top - 1;
+
+  print_new_line();
+  printf("---> Popped element: %d", e);
+  print_new_line();
+
+  stack_traversal(stack, length, * top);
+}
+
+void stacks() {
+  int length = 0, choice = 0, top = -1;
+  int * stack;
+  print_new_line();
+  printf("Please enter maximum length of stack");
+  print_new_line();
+  scanf("%d", & length);
+  print_new_line();
+
+  stack = (int * ) malloc(length * sizeof(int));
+
+  stacks_start: print_new_line();
+  printf("Please enter a choice:");
+
+  print_new_line();
+  printf("1. Push");
+
+  print_new_line();
+  printf("2. Pop");
+
+  print_new_line();
+  printf("3. Traversal");
+
+  print_new_line();
+  scanf("%d", & choice);
+  print_new_line();
+
+  switch (choice) {
+  case 1:
+    stack_push(stack, length, & top);
+    goto stacks_start;
+    break;
+
+  case 2:
+    stack_pop(stack, length, & top);
+    goto stacks_start;
+    break;
+
+  case 3:
+    stack_traversal(stack, length, top);
+    goto stacks_start;
+    break;
+
+  default:
+    print_new_line();
+    printf("Please enter a valid choice");
+    print_new_line();
+    goto stacks_start;
   }
 }
 
@@ -238,8 +382,9 @@ int main() {
     arrays();
     break;
 
-    // case 2: stacks();
-    // break;
+  case 2:
+    stacks();
+    break;
 
     // case 3: queues();
     // break;
