@@ -9,6 +9,21 @@ void print_new_line() {
   printf("\n");
 }
 
+void print_stack_stats(int operations, int length, char * type) {
+  print_new_line();
+  print_new_line();
+  printf("*****************  STATS FOR %s****************************", type);
+  print_new_line();
+  printf("Time Complexity: O( %d )", operations);
+  print_new_line();
+  printf("Space Complexity: O( %d )", length);
+  print_new_line();
+  printf("*********************************************");
+  print_new_line();
+  print_new_line();
+
+}
+
 void print_array_stats(int operations, int length, char * type) {
   print_new_line();
   print_new_line();
@@ -247,6 +262,7 @@ void arrays() {
 }
 
 void stack_traversal(int * stack, int length, int top) {
+  int operations = 0;
   for (int i = length - 1; i >= 0; i--) {
     if (i > top) {
       printf("__");
@@ -258,8 +274,10 @@ void stack_traversal(int * stack, int length, int top) {
       printf("%d", stack[i]);
       print_new_line();
     }
-
+    operations++;
   }
+
+  print_stack_stats(operations, length, "STACK TRAVERSAL");
 }
 
 void stack_push(int * stack, int length, int * top) {
@@ -269,7 +287,7 @@ void stack_push(int * stack, int length, int * top) {
     print_new_line();
     return;
   }
-  int e;
+  int e, operations = 0;
   print_new_line();
   printf("Please enter the element you wish to push");
   print_new_line();
@@ -279,10 +297,13 @@ void stack_push(int * stack, int length, int * top) {
 
   * top = * top + 1;
   stack[ * top] = e;
+  operations++;
 
   print_new_line();
   printf("---> Element pushed");
   print_new_line();
+
+  print_stack_stats(operations, length, "STACK PUSH");
 
   stack_traversal(stack, length, * top);
 
@@ -295,12 +316,16 @@ void stack_pop(int * stack, int length, int * top) {
     print_new_line();
     return;
   }
-  int e = stack[ * top];
+  int e = stack[ * top], operations = 0;
+  stack[ * top] = 0;
+  operations++;
   * top = * top - 1;
 
   print_new_line();
   printf("---> Popped element: %d", e);
   print_new_line();
+
+  print_stack_stats(operations, length, "STACK POP");
 
   stack_traversal(stack, length, * top);
 }
@@ -356,10 +381,25 @@ void stacks() {
   }
 }
 
+void print_queue_stats(int operations, int length, char* type){
+  print_new_line();
+  print_new_line();
+  printf("*****************  STATS FOR %s****************************", type);
+  print_new_line();
+  printf("Time Complexity: O( %d )", operations);
+  print_new_line();
+  printf("Space Complexity: O( %d )", length);
+  print_new_line();
+  printf("*********************************************");
+  print_new_line();
+  print_new_line();
+}
 void queue_traversal(int * queue, int length, int rear) {
   print_new_line();
+  int operations = 0;
 
   for (int i = 0; i < length; i++) {
+    operations++;
     if (rear == -1 && i == 0) {
       printf("(F) (R)");
     } else if (i == 0) {
@@ -374,7 +414,10 @@ void queue_traversal(int * queue, int length, int rear) {
   }
   print_new_line();
   print_new_line();
+
+  print_queue_stats(operations, length, " QUEUE TRAVERSAL ");
 }
+
 
 void queue_add(int * queue, int length, int * rear) {
   if ( * rear == length - 1) {
@@ -383,7 +426,7 @@ void queue_add(int * queue, int length, int * rear) {
     print_new_line();
     return;
   }
-  int e;
+  int e, operations = 0;
   print_new_line();
   printf("Please enter the element you wish to add.");
   print_new_line();
@@ -392,10 +435,13 @@ void queue_add(int * queue, int length, int * rear) {
 
   * rear = * rear + 1;
   queue[ * rear] = e;
+  operations++;
 
   print_new_line();
   printf("%d added to queue", e);
   print_new_line();
+
+  print_queue_stats(operations, length, " QUEUE ADD ");
 
   queue_traversal(queue, length, * rear);
 
@@ -409,7 +455,7 @@ void queue_remove(int * queue, int length, int * rear) {
     return;
   }
 
-  int e = queue[0];
+  int e = queue[0], operations = 0;
 
   for (int i = 0; i < * rear; i++) {
     queue[i] = queue[i + 1];
@@ -419,6 +465,8 @@ void queue_remove(int * queue, int length, int * rear) {
   print_new_line();
   printf("Removed element is %d", e);
   print_new_line();
+
+  print_queue_stats(operations, length, " QUEUE REMOVE ");
 
   queue_traversal(queue, length, * rear);
 
