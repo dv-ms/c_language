@@ -1,13 +1,50 @@
-// Hello world! Cplayground is an online sandbox that makes it easy to try out
-// code.
-
 #include <stdio.h>
 
 #include <stdlib.h>
 
+// Syllabus
+
+// 1. Arrays
+// - Traversal
+// - Searching: Linear, Binary*
+// - Insertion*
+// - Deletion*
+// - Sorting*: Selection, Bubble, Insertion, Merge, Quick, Radix
+// - Multi-Dimentional*: Table, Matrix
+// - Application*: Polynomial Aritmatic
+
+// 2. Stack
+// - Traversal
+// - Push
+// - Pop
+// - Application*: Arithmatic operations
+
+// 3. Queues
+// - Traversal
+// - Add
+// - Remove
+// - Circular Queue*
+// - Priority Queue*
+// - Dequeue*
+
+// 4. Pointers
+
+// 5. Linked lists
+// - Create
+
+// 6. Trees
+
+// 7. Graphs
+
+// 8. Files
+
+// 9. Advanced
+
 void print_new_line() {
   printf("\n");
 }
+
+void linked_list();
 
 void print_stack_stats(int operations, int length, char * type) {
   print_new_line();
@@ -75,34 +112,26 @@ void array_linear_search(int * arr, int length) {
   print_array_stats(operations, length, "ARRAY LINEAR SEARCH");
 }
 
-void binarySearch(int arr[], int left_index, int right_index, int q) {
-  if (right_index >= left_index) {
+void binarySearch(int arr[], int left_index, int right_index, int q, int * operations, int length) {
+  * operations = * operations + 1;
+  if (right_index >= left_index && q >= arr[left_index] && q <= arr[right_index]) {
     int mid_index = left_index + (right_index - left_index) / 2;
 
-    // If the element is present at the middle
-    // itself
-    if (arr[mid_index] == q)
+    if (arr[mid_index] == q) {
       print_new_line();
-    printf("---> Hey I found %d at index %d", q, mid_index);
-    print_new_line();
-    return;
-
-    // If element is smaller than mid, then
-    // it can only be present in left subarray
-    if (arr[mid_index] > q)
-      binarySearch(arr, left_index, mid_index - 1, q);
-    else
-      // Else the element can only be present
-      // in right subarray
-      binarySearch(arr, mid_index + 1, right_index, q);
+      printf("---> Hey I found %d at index %d", q, mid_index);
+      print_new_line();
+      return;
+    } else if (arr[mid_index] > q) {
+      binarySearch(arr, left_index, mid_index - 1, q, operations, length);
+    } else if (arr[mid_index] < q) {
+      binarySearch(arr, mid_index + 1, right_index, q, operations, length);
+    }
   } else {
     print_new_line();
     printf("---> Mmm mm, Sorry couldn't find %d in the array :(", q);
     print_new_line();
   }
-
-  // We reach here when element is not
-  // present in array
 }
 
 void array_binary_search(int * arr, int length) {
@@ -119,7 +148,11 @@ void array_binary_search(int * arr, int length) {
   scanf("%d", & q);
   print_new_line();
 
-  binarySearch(arr, 0, length - 1, q);
+  int operations = 0;
+
+  binarySearch(arr, 0, length - 1, q, & operations, length);
+
+  print_array_stats(operations, length, " BINARY SEARCH ");
 }
 
 void array_selection_sort(int * arr, int length) {
@@ -381,7 +414,7 @@ void stacks() {
   }
 }
 
-void print_queue_stats(int operations, int length, char* type){
+void print_queue_stats(int operations, int length, char * type) {
   print_new_line();
   print_new_line();
   printf("*****************  STATS FOR %s****************************", type);
@@ -417,7 +450,6 @@ void queue_traversal(int * queue, int length, int rear) {
 
   print_queue_stats(operations, length, " QUEUE TRAVERSAL ");
 }
-
 
 void queue_add(int * queue, int length, int * rear) {
   if ( * rear == length - 1) {
@@ -542,6 +574,10 @@ int main() {
   print_new_line();
 
   print_new_line();
+  printf("4. Linked Lists");
+  print_new_line();
+
+  print_new_line();
   scanf("%d", & ds_choice);
   print_new_line();
 
@@ -558,6 +594,10 @@ int main() {
     queues();
     break;
 
+  case 4:
+    linked_list();
+    break;
+
   default:
     print_new_line();
     printf("Please enter a valid choice");
@@ -565,4 +605,66 @@ int main() {
   }
 
   return 0;
+}
+
+struct node {
+  int value;
+  struct node * next;
+};
+
+void append(struct node * head) {
+  struct node * new_node = (struct node * ) malloc(sizeof(struct node));
+
+  printf("new node value");
+  scanf("%d", & new_node -> value);
+
+  head -> next = new_node;
+  head = new_node;
+
+  print_new_line();
+  printf("added");
+}
+
+void print(struct node * first) {
+  struct node * iterator = first;
+  while (iterator != NULL) {
+    printf("%d -> ", iterator -> value);
+    iterator = iterator -> next;
+  }
+}
+
+void linked_list() {
+  int choice = 0;
+
+  print_new_line();
+
+  struct node * first = (struct node * ) malloc(sizeof(struct node));
+
+  print_new_line();
+  printf("first node value");
+  scanf("%d", & first -> value);
+  first -> next = NULL;
+
+  struct node * head = first;
+
+  ll_start: print_new_line();
+  printf("1. append to LL");
+
+  print_new_line();
+  printf("2. print LL");
+
+  printf("choice");
+  scanf("%d", & choice);
+
+  switch (choice) {
+  case 1:
+    append(head);
+    goto ll_start;
+    break;
+
+  case 2:
+    print(first);
+    goto ll_start;
+    break;
+  }
 }
